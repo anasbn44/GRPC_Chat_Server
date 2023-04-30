@@ -1,0 +1,60 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+option java_package = "ma.enset.stubs";
+
+service ChatServices {
+  rpc connexion (stream Client) returns (stream Response);
+  rpc disconnect (stream Client) returns (stream Response);
+  rpc join (stream Channel) returns (stream Response);
+  rpc listClient (stream ClientList) returns (stream ResponseClientList);
+  rpc leave (stream Channel) returns (stream Response);
+  rpc receiveMessage (stream Message) returns (stream Response);
+  rpc sendMessage (stream Message) returns (stream Response);
+}
+
+message ClientList{
+  repeated Client clients = 1;
+}
+
+message ResponseClientList{
+  repeated Client clients = 1;
+  google.protobuf.Timestamp timestamp = 2;
+}
+
+message Channel {
+  string chanelName = 1;
+  Client client = 2;
+}
+
+message ChannelMenbers{
+  string channelName = 1;
+  repeated Client members = 2;
+}
+
+message Client{
+  string name = 1;
+}
+
+message Message{
+  string from = 1;
+  string to = 2;
+  Channel channel = 3;
+  string text = 4;
+}
+
+message Response{
+  ResponseType type = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  string message = 3;
+}
+
+enum ResponseType {
+  SENT = 0;
+  FAILED = 1;
+  ISCONNECTED = 2;
+  JOINED = 3;
+  LEFT = 4;
+  DISCONNECTED = 5;
+  RECIEVED = 6;
+  ALREADY_EXIST = 7;
+}
